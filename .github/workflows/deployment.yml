@@ -1,0 +1,51 @@
+name: GitHub release and NuGet deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Plugin Version (SemVer: https://semver.org)'
+        required: true
+      update_notes:
+        default: "-"
+        description: "Update Notes to Release"
+        required: true
+jobs:
+  deploy:
+    name: "NuGet Deployment"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout Repository
+      with:
+        fetch-depth: 0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Update version
+      run: "sed -i \"s#<Version>0.1.0</Version>#<Version>${{ github.event.inputs.version }}</Version>#\" EvolutionPlugins.GameStores/EvolutionPlugins.GameStores.csproj"  
+    - name: Update package version
+      run: "sed -i \"s#<PackageVersion>0.1.0</PackageVersion>#<PackageVersion>${{ github.event.inputs.version }}</PackageVersion>#\" EvolutionPlugins.GameStores/EvolutionPlugins.GameStores.csproj"  
+    - name: Update informational version
+      run: "sed -i \"s#<InformationalVersion>0.1.0</InformationalVersion>#<InformationalVersion>${{ github.event.inputs.version }}</InformationalVersion>#\" EvolutionPlugins.GameStores/EvolutionPlugins.GameStores.csproj"              
+    - name: Build
+      run: dotnet build EvolutionPlugins.GameStores/EvolutionPlugins.GameStores.csproj --configuration Release --no-restore
+    - name: Deploy to NuGet
+      run: dotnet nuget push EvolutionPlugins.GameStores/bin/Release/*.nupkg
+             --api-key ${{ secrets.NUGET_DEPLOY_KEY }}
+             --source https://api.nuget.org/v3/index.json
+    - name: Release to GitHub
+      uses: actions/create-release@master
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        body: |
+          Install plugin with command: `openmod install EvolutionPlugins.GameStores`
+          NuGet: https://www.nuget.org/packages/EvolutionPlugins.GameStores
+          Changelog:
+            ${{ github.event.inputs.update_notes }}
+        release_name: EvolutionPlugins.GameStores v${{ github.event.inputs.version }}
+        tag_name: v${{ github.event.inputs.version }}
