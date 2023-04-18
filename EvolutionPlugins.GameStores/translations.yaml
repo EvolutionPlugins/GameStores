@@ -1,0 +1,17 @@
+errors:
+  apiError: "Корзина недоступна"
+  empty: "Ваша корзина пуста"
+  limit: "Вы не можете получить больше 10 предметов за раз"
+  pageNotFound: "Страница не существует"
+  takeNumberError: "Недопустимый номер товара"
+
+take:
+  item: "Получен товар из корзины: \"{Name}\""
+  itemWithAmount: "Получен товар из корзины: \"{Name}\" в количестве {Amount}"
+
+page:
+  header: "<align=\"center\"><b>------ Страница ({Page}/{Pages}) ------"
+  item: "<color=#FFDF00>{Index}. \"{Name}\" x{Amount}"
+  takeCommand: "Получить конкретный товар: /store take <number> <i>(номер в списке)"
+  nextPage: "Следующая страница: /store page {Page}"
+  previousPage: "Предыдущия страница: /store page {Page}"

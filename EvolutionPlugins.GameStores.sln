@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33402.96
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvolutionPlugins.GameStores", "EvolutionPlugins.GameStores\EvolutionPlugins.GameStores.csproj", "{04A2F578-E6B5-40FB-9C1A-98F0C271AA5A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{599E425F-B0B5-4912-BB2A-6CEB729A58C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvolutionPlugins.GameStores.Tests", "EvolutionPlugins.GameStores.Tests\EvolutionPlugins.GameStores.Tests.csproj", "{F4A6DA7E-3973-4DC6-A83B-32A9390BBF6C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04A2F578-E6B5-40FB-9C1A-98F0C271AA5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04A2F578-E6B5-40FB-9C1A-98F0C271AA5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04A2F578-E6B5-40FB-9C1A-98F0C271AA5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04A2F578-E6B5-40FB-9C1A-98F0C271AA5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4A6DA7E-3973-4DC6-A83B-32A9390BBF6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4A6DA7E-3973-4DC6-A83B-32A9390BBF6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4A6DA7E-3973-4DC6-A83B-32A9390BBF6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4A6DA7E-3973-4DC6-A83B-32A9390BBF6C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F4A6DA7E-3973-4DC6-A83B-32A9390BBF6C} = {599E425F-B0B5-4912-BB2A-6CEB729A58C2}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B4AC5A0D-275A-4E2B-A72C-CC6151674AEE}
+	EndGlobalSection
+EndGlobal
