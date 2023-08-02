@@ -21,7 +21,7 @@ public class GameStoresPlugin : OpenModUnturnedPlugin
         Logger.LogInformation("https://github.com/evolutionplugins \\ https://github.com/diffoz");
         Logger.LogInformation("Discord Support: https://discord.gg/6KymqGv");
 
-        if (string.IsNullOrEmpty(Configuration["secretKey"]))
+        if (Configuration["secretKey"] is null or { Length: 0 } or "Key")
         {
             Logger.LogWarning("Secret key is not setted!");
         }
