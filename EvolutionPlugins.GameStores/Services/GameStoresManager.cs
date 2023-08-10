@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using OpenMod.API.Ioc;
 using OpenMod.API.Plugins;
 using OpenMod.API.Prioritization;
+using OpenMod.Core.Helpers;
+using OpenMod.Core.Plugins.Events;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -17,28 +19,44 @@ using System.Threading.Tasks;
 namespace EvolutionPlugins.GameStores.Services;
 
 [ServiceImplementation(Lifetime = ServiceLifetime.Singleton, Priority = Priority.Lowest)]
-public class GameStoresManager : IGameStoresManager
+public class GameStoresManager : IGameStoresManager, IDisposable
 {
     private static readonly IReadOnlyList<GameStoreItem> s_EmptyList = new List<GameStoreItem>().AsReadOnly();
 
     private readonly HttpClient m_HttpClient;
-    private readonly string m_BaseRequest;
+    private readonly IDisposable m_EventListener;
 
-    public GameStoresManager(IPluginAccessor<GameStoresPlugin> pluginActivator, HttpClient httpClient)
+    private string m_BaseRequest;
+
+    public GameStoresManager(IPluginAccessor<GameStoresPlugin> pluginAccessor, HttpClient httpClient)
     {
-        m_BaseRequest = GetBaseRequest(pluginActivator);
+        m_BaseRequest = GetBaseRequest(pluginAccessor.Instance ?? throw new Exception("Plugin is not loaded"));
         m_HttpClient = httpClient;
+
+        m_EventListener = 
+            pluginAccessor.Instance!.EventBus.Subscribe<PluginConfigurationChangedEvent>(pluginAccessor.Instance, OnPluginConfigurationChanged);
     }
 
     internal GameStoresManager(HttpClient client, string shopId, string secretKey, string serverId)
     {
         m_HttpClient = client;
         m_BaseRequest = $"https://gamestores.app/api/?shop_id={shopId}&secret={secretKey}&server={serverId}";
+        m_EventListener = NullDisposable.Instance;
     }
 
-    private string GetBaseRequest(IPluginAccessor<GameStoresPlugin> pluginActivator)
+    private Task OnPluginConfigurationChanged(IServiceProvider serviceProvider, object? sender, PluginConfigurationChangedEvent @event)
     {
-        var configuration = pluginActivator.Instance?.Configuration ?? throw new Exception("Plugin is not loaded");
+        if (@event.Plugin is GameStoresPlugin plugin)
+        {
+            m_BaseRequest = GetBaseRequest(plugin);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private string GetBaseRequest(GameStoresPlugin plugin)
+    {
+        var configuration = plugin.Configuration;
         return $"https://gamestores.app/api/?shop_id={configuration["shopId"]}&secret={configuration["secretKey"]}&server={configuration["serverId"]}";
     }
 
@@ -179,6 +197,11 @@ public class GameStoresManager : IGameStoresManager
         }
     }
 
+    public void Dispose()
+    {
+        m_EventListener.Dispose();
+    }
+
     private class BaseResponse
     {
         [JsonProperty("result")]
@@ -206,6 +229,6 @@ public class GameStoresManager : IGameStoresManager
     private sealed class ResponseActionItems : BaseResponse
     {
         [JsonProperty("data")]
-        public IReadOnlyList<GameStoreItem>? Items { get; set; }
+        public List<GameStoreItem>? Items { get; set; }
     }
 }
